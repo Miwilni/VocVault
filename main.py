@@ -100,7 +100,7 @@ def choose_method_of_input():
         "Möchten Sie die im Code voreingetragen Vokabeln verwenden, oder im nächsten Schritt eine Möglichkeit zur "
         "eigenen "
         "Eingabe der Vokabeln auswählen? \nGeben Sie \n'1' für eigene Vokabeln verwenden oder \n'2' für im Code "
-        "voreingetragene "
+        "voreingetragene"
         "Vokabeln verwenden ein!\n Eingabe: ")
     if number_of_method.lower() == "1":
         number_of_method = input("Wählen Sie nun eine Möglichkeit zur eigenen Eingabe!\n'1' für Vokabeln aus CSV Datei "
