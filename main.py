@@ -1,7 +1,7 @@
 #import VocabularyTraining
-import UserClass
+import UserAdministration
 def main():
-    user1:UserClass.User = UserClass.User()
+    user1:UserAdministration.User = UserAdministration.User()
     print(user1.get_user_id())
     print(user1.get_email())
     print(user1.get_role())
