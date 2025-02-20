@@ -2,6 +2,8 @@ from sql_zugriff import execute_get_query, execute_insert_query
 import time
 import main
 from hash import generate_hash
+import pwinput
+
 class User:
     def __init__(self):
         self.__UserID: int = -1
@@ -140,7 +142,7 @@ class User:
     def sign_in(self):
         self.db_get_username()
         while not self.check_password():
-            print("Too many Attemps with invalid password. Please try again in 30 seconds.")
+            print("Too many Attempts with invalid password. Please try again in 30 seconds.")
             for i in range (6):
                 print(f"Time left you need to wait: {30-5*i}")
                 time.sleep(5)
@@ -152,25 +154,27 @@ class User:
         self.__UserID = execute_get_query(f"SELECT MAX(UserID) FROM User")[0][0] + 1
         self.__email: str = email
         self.__username: str = username
-        self.__password: str = generate_hash(password)
+        self.__password: str = password
         self.__role: str = role
         self.__number_vocabulary_relations: int = 0
         self.__ids_vocabulary_relations: list[int] = []
         self.__native_language: str = native_language.upper()
-        self.__foreign_languages: str = foreign_languages
+        self.__foreign_languages: str = foreign_languages.upper()
         query1: str = f"INSERT INTO User (UserID, Email, Role, Username, Password, NumberVocabularyRelations, IDsVocabularyRelations, NativeLanguage, ForeignLanguages, Einmalcode, ZeitEinmalcode) VALUES ({self.__UserID}, '{self.__email}', '{self.__role}', '{self.__username}', '{self.__password}', {self.__number_vocabulary_relations}, '{self.__ids_vocabulary_relations}', '{self.__native_language}', '{self.__foreign_languages}', 0, '20-02-2025');"
         execute_insert_query(query1)
-        print("Succesfully Signed up")
+        print("Successfully Signed up")
+        self.introduce_user(True)
 
     def sign_up(self, admin: bool):
         if admin:
             admin = bool(input("Do you want to create a Admin (press True) or User (press False)\nYour Answer: "))
         if admin:
-            self.add_user(input("What's your Email adress?"), input("Choose a username"),
-                      input("Enter your preffered Password"), "Admin", input("Enter your Native Language: "), "[" + input("Enter your Foreign Languages separated by commas: " + "]"))
+            self.add_user(input("What's your Email address?: "), input("Choose a username: "),
+                          generate_hash(pwinput.pwinput()), "Admin", input("Enter your Native Language: "),
+                          "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
         else:
-            self.add_user(input("What's your Email adress?: "), input("Choose a username: "),
-                          input("Enter your preffered Password: "), "User", input("Enter your Native Language: "),
+            self.add_user(input("What's your Email address?: "), input("Choose a username: "),
+                          generate_hash(pwinput.pwinput()), "User", input("Enter your Native Language: "),
                           "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
 
     def update_me(self):
