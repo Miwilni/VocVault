@@ -2,4 +2,4 @@ workspace.xml
 .idea/workspace.xml
 .idea
 sql_zugriff.py
-send_einmalcode.py
+send_mail.py
