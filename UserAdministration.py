@@ -1,8 +1,13 @@
+from send_mail import *
 from sql_zugriff import execute_get_query, execute_insert_query
 import time
 import main
-from hash import generate_hash
+from hash_it import *
 import pwinput
+import secrets
+import string
+from vocabulary import Vocab
+
 
 class User:
     def __init__(self):
@@ -15,6 +20,8 @@ class User:
         self.__ids_vocabulary_relations: list[int] = []
         self.__native_language: str = ""
         self.__foreign_languages: list[str] = []
+        self.__otp: str = ""
+        self.__vocab: Vocab = Vocab()
         self.introduce_user(True)
 
     def introduce_user(self,first_attempt: bool):
@@ -61,6 +68,9 @@ class User:
     def db_get_email(self):
         self.__email = execute_get_query(f"SELECT Email FROM User WHERE Username = '{self.__username}'")[0][0]
 
+    def db_get_otp(self):
+        self.__otp = execute_get_query(f"SELECT OTP FROM User WHERE Username = '{self.__username}'")[0][0]
+
     #Set or update db information
     def update_user_email(self, new_email: str):
         execute_get_query(f"UPDATE User SET Email = '{new_email}' WHERE Username = '{self.__username}'")
@@ -72,7 +82,7 @@ class User:
         execute_get_query(f"UPDATE User SET Username = '{new_username}' WHERE Username = '{self.__username}'")
 
     def update_user_password(self, new_password: str):
-        new_password = generate_hash(new_password)
+        new_password = generate_normal_hash(new_password)
         execute_get_query(f"UPDATE User SET Password = '{new_password}' WHERE Username = '{self.__username}'")
 
     def update_number_vocabulary_relations(self, new_number_vocabulary_relations: int):
@@ -110,7 +120,6 @@ class User:
         pass
 
 
-
     # Get from py code
     def get_user_id(self):
         return self.__UserID
@@ -139,6 +148,40 @@ class User:
     def get_email(self)->str:
         return self.__email
 
+    def create_otp(self):
+        found_otp = False
+        while not found_otp:
+            self.__otp = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+            used_otps = [list(item) for item in execute_get_query("SELECT OTP FROM User")]
+            for i in range(len(used_otps)):
+                used_otps[i] = used_otps[i][0]
+            used_otps = [item for item in used_otps if item != "0"]
+            if generate_normal_hash(self.__otp) not in used_otps:
+                found_otp = True
+        execute_insert_query(f"UPDATE User SET OTP = '{generate_normal_hash(self.__otp)}' WHERE UserID = 1")
+
+
+    def send_otp(self, purpose: str):
+        self.create_otp()
+        print(self.__email)
+        send_mail(self.__email, f"Your VocTrain One-Time Password: {self.__otp}", f"You requested a One-Time Password from VocTrain. \nIt is '{self.__otp}'.\n You can only use it in the next ten minutes {purpose}.\n If you didn´t request it and don´t want to be a user of VocTrain, just answer with 'delete' and if you are and want to be a member of VocTrain but didn´t request the code, please change your password or reset it.", f"Your Code has been successfully sent to: {self.__email}!")
+        self.db_get_otp()
+        self.check_otp()
+
+    def check_otp(self):
+        correct_otp = False
+        while not correct_otp:
+            input_otp = input("Type in your one-time password: ")
+            self.db_get_otp()
+            if generate_normal_hash(input_otp) == self.__otp:
+                execute_insert_query(f"UPDATE User SET OTP = '0' WHERE UserID = 1")
+                print("2FA and One-Time Password was correct!")
+                correct_otp = True
+            else:
+                print("That was incorrect. Try again.")
+
+
+
     def sign_in(self):
         self.db_get_username()
         while not self.check_password():
@@ -148,6 +191,7 @@ class User:
                 time.sleep(5)
             self.introduce_user(False)
         self.update_me()
+        self.send_otp("for 2 FA")
         print("Signed in successfully!")
 
     def add_user(self, email: str,username:str, password:str, role:str, native_language:str, foreign_languages:str):
@@ -170,11 +214,11 @@ class User:
             admin = bool(input("Do you want to create a Admin (press True) or User (press False)\nYour Answer: "))
         if admin:
             self.add_user(input("What's your Email address?: "), input("Choose a username: "),
-                          generate_hash(pwinput.pwinput()), "Admin", input("Enter your Native Language: "),
+                          generate_normal_hash(pwinput.pwinput()), "Admin", input("Enter your Native Language: "),
                           "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
         else:
             self.add_user(input("What's your Email address?: "), input("Choose a username: "),
-                          generate_hash(pwinput.pwinput()), "User", input("Enter your Native Language: "),
+                          generate_normal_hash(pwinput.pwinput()), "User", input("Enter your Native Language: "),
                           "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
 
     def update_me(self):
@@ -185,6 +229,8 @@ class User:
         self.db_get_number_vocabulary_relations()
         self.db_get_foreign_languages()
         self.db_get_ids_vocabulary_relations()
+        self.db_get_email()
+        self.db_get_otp()
 
     def __del__(self):
         print("Signed Out Successfully")
@@ -196,7 +242,7 @@ class User:
     def check_password(self):
         correct_password: str = execute_get_query(f"SELECT Password FROM User WHERE Username = '{self.__username}'")[0][0]
         for i in range (0, 3, 1):
-            if generate_hash(self.__password) != correct_password:
+            if generate_normal_hash(self.__password) != correct_password:
                 if i == 0:
                     self.__password: str = input("Password: ")
                 else:

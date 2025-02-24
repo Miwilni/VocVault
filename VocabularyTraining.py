@@ -4,7 +4,7 @@ import csv
 import random
 import sys
 from langdetect import detect
-from datamanagement import *
+from vocabulary import *
 
 # from googletrans import Translator
 # from langcodes import Language

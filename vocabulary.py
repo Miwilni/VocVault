@@ -1,6 +1,6 @@
 from random import shuffle
 
-class VocabularyMemory:
+class Vocab:
     def __init__(self):
         self.__vocab_dict_first_lang_key: dict = {}
         self.__vocab_dict_second_lang_key: dict = {v: k for k, v in self.__vocab_dict_first_lang_key.items()}
