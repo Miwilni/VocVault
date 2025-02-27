@@ -43,7 +43,7 @@ class User:
         self.__username = input("Username: ")
         exists: bool = execute_get_query(f"SELECT EXISTS (SELECT 1 FROM User WHERE Username = '{self.__username}');")[0][0]
         if exists == 0:
-            print("This Username doesn't exist.Please try again.")
+            print("This Username doesn't exist. Please try again.")
             self.introduce_user(False)
 
     def db_get_password(self):
@@ -158,28 +158,63 @@ class User:
             used_otps = [item for item in used_otps if item != "0"]
             if generate_normal_hash(self.__otp) not in used_otps:
                 found_otp = True
+        events: tuple = execute_get_query("SHOW EVENTS;")
+        if events != ():
+            event_index: int = int(events[len(events)-1][1][len(events[len(events)-1][1]) - 1])+1
+        else:
+            event_index = 0
+        execute_insert_query(f"CREATE EVENT delete_otp{event_index} ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL {10*60} SECOND DO UPDATE User SET OTP = '0' WHERE UserID = {self.__UserID};")
         execute_insert_query(f"UPDATE User SET OTP = '{generate_normal_hash(self.__otp)}' WHERE UserID = 1")
 
+    def check_otp_overall(self, purpose):
+        #not_again: bool = False
+        #while not self.check_otp() and not not_again:
+        if not self.check_otp():
+            print("Too many Attempts with invalid One-time Password. Please try again in 30 seconds.")
+            for i in range(6):
+                print(f"Time left you need to wait: {30 - 5 * i}")
+                time.sleep(5)
+            execute_insert_query(f"UPDATE User SET OTP = '0' WHERE UserID = {self.__UserID}")
+            #not_again = True
+            print("testnotagain")
+        #print("test_end_while")
+        #if not_again:
+            #print("Testsend")
+            self.send_otp(purpose)
 
     def send_otp(self, purpose: str):
-        self.create_otp()
-        print(self.__email)
-        send_mail(self.__email, f"Your VocTrain One-Time Password: {self.__otp}", f"You requested a One-Time Password from VocTrain. \nIt is '{self.__otp}'.\n You can only use it in the next ten minutes {purpose}.\n If you didn´t request it and don´t want to be a user of VocTrain, just answer with 'delete' and if you are and want to be a member of VocTrain but didn´t request the code, please change your password or reset it.", f"Your Code has been successfully sent to: {self.__email}!")
-        self.db_get_otp()
-        self.check_otp()
-
-    def check_otp(self):
-        correct_otp = False
-        while not correct_otp:
-            input_otp = input("Type in your one-time password: ")
+        if execute_get_query(f"SELECT OTP FROM User WHERE UserID = {self.__UserID}")[0][0] == '0':
+            self.create_otp()
+            #print(self.__email)
+            send_mail(self.__email, f"Your VocTrain One-Time Password: {self.__otp}", f"You requested a One-Time Password from VocTrain. \nIt is '{self.__otp}'.\n You can only use it in the next ten minutes {purpose}.\n If you didn't request it and don´t want to be a user of VocTrain, just answer with 'delete' and if you are and want to be a member of VocTrain but didn't request the code, please change your password or reset it.", f"Your Code has been successfully sent to: {self.__email}!")
             self.db_get_otp()
-            if generate_normal_hash(input_otp) == self.__otp:
-                execute_insert_query(f"UPDATE User SET OTP = '0' WHERE UserID = 1")
-                print("2FA and One-Time Password was correct!")
-                correct_otp = True
+            self.check_otp_overall(purpose)
+        else:
+            print("You already have an OTP. Do you remember it (press '1') or do you want a new one (press '2')?")
+            answer: str = input("Answer: ")
+            if answer == '1':
+                execute_insert_query(f"UPDATE User SET OTP = '0' WHERE UserID = {self.__UserID}")
+                self.send_otp(purpose)
             else:
-                print("That was incorrect. Try again.")
+                self.check_otp_overall(purpose)
+            self.check_otp_overall(purpose)
 
+    def check_otp(self)->bool:
+        input_otp: str = ""
+        for i in range(0, 3, 1):
+            if generate_normal_hash(input_otp) != self.__otp:
+                if i == 0:
+                    input_otp:str = pwinput.pwinput("Type in your one-time password: ")
+                    self.db_get_otp()
+                else:
+                    print(f"The one-time Password is incorrect, you have {3 - i} attempts remaining!")
+                    input_otp = pwinput.pwinput("One-time Password: ")
+                    self.db_get_otp()
+            else:
+                execute_insert_query(f"UPDATE User SET OTP = '0' WHERE UserID = {self.__UserID}")
+                print("2FA and One-Time Password was correct!")
+                return True
+        return False
 
 
     def sign_in(self):
@@ -204,22 +239,29 @@ class User:
         self.__ids_vocabulary_relations: list[int] = []
         self.__native_language: str = native_language.upper()
         self.__foreign_languages: str = foreign_languages.upper()
-        query1: str = f"INSERT INTO User (UserID, Email, Role, Username, Password, NumberVocabularyRelations, IDsVocabularyRelations, NativeLanguage, ForeignLanguages, Einmalcode, ZeitEinmalcode) VALUES ({self.__UserID}, '{self.__email}', '{self.__role}', '{self.__username}', '{self.__password}', {self.__number_vocabulary_relations}, '{self.__ids_vocabulary_relations}', '{self.__native_language}', '{self.__foreign_languages}', 0, '20-02-2025');"
+        query1: str = f"INSERT INTO User (UserID, Email, Role, Username, Password, NumberVocabularyRelations, IDsVocabularyRelations, NativeLanguage, ForeignLanguages, OTP, ZeitEinmalcode, 2FA, PhoneNumber) VALUES ({self.__UserID}, '{self.__email}', '{self.__role}', '{self.__username}', '{self.__password}', {self.__number_vocabulary_relations}, '{self.__ids_vocabulary_relations}', '{self.__native_language}', '{self.__foreign_languages}', 0, '20-02-2025', 0, -1);"
         execute_insert_query(query1)
+        self.send_otp("for signing up")
         print("Successfully Signed up")
         self.introduce_user(True)
 
     def sign_up(self, admin: bool):
-        if admin:
-            admin = bool(input("Do you want to create a Admin (press True) or User (press False)\nYour Answer: "))
-        if admin:
-            self.add_user(input("What's your Email address?: "), input("Choose a username: "),
-                          generate_normal_hash(pwinput.pwinput()), "Admin", input("Enter your Native Language: "),
-                          "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
+        user_name = input("Choose a username: ")
+        password = generate_normal_hash(pwinput.pwinput())
+        if password == generate_normal_hash(pwinput.pwinput()):
+            if admin:
+                admin = bool(input("Do you want to create a Admin (press True) or User (press False)\nYour Answer: "))
+            if admin:
+                self.add_user(input("What's your Email address?: "), user_name,
+                              password, "Admin", input("Enter your Native Language: "),
+                              "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
+            else:
+                self.add_user(input("What's your Email address?: "), user_name,
+                              password, "User", input("Enter your Native Language: "),
+                              "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
         else:
-            self.add_user(input("What's your Email address?: "), input("Choose a username: "),
-                          generate_normal_hash(pwinput.pwinput()), "User", input("Enter your Native Language: "),
-                          "[" + input("Enter your Foreign Languages separated by commas: ") + "]")
+            print("Passwords do not match. Please try again.")
+            self.sign_up(admin)
 
     def update_me(self):
         self.db_get_password()
@@ -244,10 +286,11 @@ class User:
         for i in range (0, 3, 1):
             if generate_normal_hash(self.__password) != correct_password:
                 if i == 0:
-                    self.__password: str = input("Password: ")
+                    self.__password: str = pwinput.pwinput("Password: ")
                 else:
                     print(f"The Password is incorrect, you have {3-i} attempts remaining!")
-                    self.__password: str = input("Password: ")
+                    self.__password: str = pwinput.pwinput("Password: ")
             else:
+                print("Your Password is correct!")
                 return True
         return False
