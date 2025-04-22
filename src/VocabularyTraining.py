@@ -4,7 +4,7 @@ import csv
 import random
 import sys
 from langdetect import detect
-from vocabulary import *
+
 
 # from googletrans import Translator
 # from langcodes import Language
@@ -118,7 +118,7 @@ def choose_method_of_input():
             if number_of_method.lower() == "1":  # relativen Pfad angeben
                 relative_path = input("Relativer Pfad: ")
             elif number_of_method.lower() == "2":  # Standard CSV Datei verwenden
-                relative_path = "csv_documents/Vokabeln.csv"
+                relative_path = "../csv_documents/Vokabeln.csv"
             else:
                 print("Sie haben haben eine ungültige Eingabe getätigt, bitte versuchen sie es erneut.")
                 sys.exit()
@@ -152,7 +152,7 @@ def choose_method_of_input():
                     relative_path = input("Relativer Pfad: ")
                     delimiter = input("Bitte geben Sie das Trennzeichen an!\nTrennzeichen: ")
                 elif number_of_method.lower() == "2":  # Standard CSV Datei verwenden
-                    relative_path = "csv_documents/Vokabeln.csv"
+                    relative_path = "../csv_documents/Vokabeln.csv"
                     delimiter = input("Bitte geben Sie das Trennzeichen an!\nTrennzeichen: ")
                 else:
                     print("Sie haben haben eine ungültige Eingabe getätigt, bitte versuchen Sie es erneut.")
@@ -423,7 +423,7 @@ def check_if_wrong_answers_print(input_par):
 
 def create_csv_file_with_wrong_answers():
     # Öffne eine neue CSV-Datei im Schreibmodus
-    with open('csv_documents/Nicht_gekonnt.csv', 'w', newline='') as csvfile:
+    with open('../csv_documents/Nicht_gekonnt.csv', 'w', newline='') as csvfile:
         # Erstelle einen CSV-Writer
         csv_writer = csv.writer(csvfile)
         # Schreibe die Kopfzeile (Spaltennamen)
@@ -431,14 +431,14 @@ def create_csv_file_with_wrong_answers():
 
 
 def add_wrong_answers_to_csv_file(input_language_word, output_language_word):
-    with open('csv_documents/Nicht_gekonnt.csv', 'a', newline='') as csvfile:
+    with open('../csv_documents/Nicht_gekonnt.csv', 'a', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow([input_language_word, output_language_word, user_solution])
 
 
 def create_csv_file_with_right_answers():
     # Öffne eine neue CSV-Datei im Schreibmodus
-    with open('csv_documents/Gekonnt.csv', 'w', newline='') as csvfile:
+    with open('../csv_documents/Gekonnt.csv', 'w', newline='') as csvfile:
         # Erstelle einen CSV-Writer
         csv_writer = csv.writer(csvfile)
         # Schreibe die Kopfzeile (Spaltennamen)
@@ -446,7 +446,7 @@ def create_csv_file_with_right_answers():
 
 
 def add_right_answers_to_csv_file(input_language_word, output_language_word):
-    with open('csv_documents/Gekonnt.csv', 'a', newline='') as csvfile:
+    with open('../csv_documents/Gekonnt.csv', 'a', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow([input_language_word, output_language_word])
 

@@ -1,5 +1,5 @@
 workspace.xml
 .idea/workspace.xml
 .idea
-sql_zugriff.py
-send_mail.py
+src/sql_zugriff.py
+src/send_mail.py
