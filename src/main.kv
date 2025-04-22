@@ -1,0 +1,58 @@
+<ImageButton>:
+    source: 'img/hamburger_menu.png'
+<Content>:
+
+<Header>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '50dp'
+    padding: '10dp'
+    spacing: '10dp'
+    canvas.before:
+        Color:
+            rgba: 0.2, 0.4, 0.6, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    ImageButton:
+        id: menu_button
+        size_hint_x: None
+        width: '50dp'
+        background_color: 0, 0, 0, 0
+        color: 1, 1, 1, 1
+        font_size: '20sp'
+    Label:
+        id: screen_name
+        text: "Home"
+        font_size: '20sp'
+        color: 1, 1, 1, 1
+        halign: 'left'
+        valign: 'middle'
+        text_size: self.size
+
+BoxLayout:
+    id: root_layout
+    orientation: 'vertical'
+    Header:
+    ScrollView:
+        id: content_scroll
+        do_scroll_x: False
+        do_scroll_y: True
+        BoxLayout:
+            id: content_box
+            orientation: 'vertical'
+            size_hint_y: None
+            size_hint_x: 1
+            size_hint_x: 1
+            width: self.parent.width
+            height: self.minimum_height
+            padding: ['20dp', 50, '20dp', '20dp']
+            spacing: 40
+            Label:
+                text: "Welcome to VocVault!\n\nVocVault is a vocabulary trainer thoughtfully developed by a student to encompass all the essential features of an effective language learning tool.\n\nIf you already have an account, please select Sign In from the dropdown menu. Otherwise, click Sign Up to create a new account.\n\nThank you for choosing VocVault!\n\nYour Developer"
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+                halign: 'left'
+                valign: 'top'
+                color: 1, 1, 1, 1
