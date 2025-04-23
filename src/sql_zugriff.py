@@ -4,11 +4,10 @@ import pymysql
 # Verbindung herstellen
 #query1: str = "select UserID from User where Username = 'Mika'"
 def execute_get_query(query):
-    db_pass = os.getenv("DB_PASSWORD")
     conn = pymysql.connect(
         host="nwallner.de",
         user="infolk-vokabel",
-        password=db_pass,
+        password=os.getenv("DB_PASSWORD"),  # Passwort aus Secret oder Umgebungsvariable
         database="infolk-vokabel"
     )
     cursor = conn.cursor()
@@ -18,11 +17,10 @@ def execute_get_query(query):
     return result
 
 def execute_insert_query(query):
-    db_pass = os.getenv("DB_PASSWORD")
     conn = pymysql.connect(
         host="nwallner.de",
         user="infolk-vokabel",
-        password=db_pass,
+        password=os.getenv("DB_PASSWORD"),  # Passwort aus Secret oder Umgebungsvariable
         database="infolk-vokabel"
     )
     cursor = conn.cursor()
@@ -60,3 +58,5 @@ def execute_insert_query(query):
     cursor.execute(query)
     conn.commit()
     conn.close()"""
+
+print(execute_get_query("Select * From USER"))
