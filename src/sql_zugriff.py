@@ -1,16 +1,18 @@
 import os
 from dotenv import load_dotenv
 import pymysql
+import cryptography
 
 # .env-Datei laden (nur lokal)
-load_dotenv()
+
 
 def get_connection():
+    load_dotenv()
     return pymysql.connect(
         host=os.getenv("DB_HOST"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_DATABASE")
+        database=os.getenv("DB")
     )
 
 def execute_get_query(sql_query):
