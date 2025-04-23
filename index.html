@@ -52,10 +52,44 @@
       text-decoration: none;
       font-weight: bold;
     }
-    @media (max-width: 600px) {
-      nav {
+    .logo{
+      width: 2rem;
+      height: 2rem;
+    }
+    @media (max-width: 964px) {
+      #nav-bar {
         flex-direction: column;
         align-items: center;
+        position: static; /* Zurück zur normalen Fluss-Position */
+        width: auto; /* Breite nur so viel wie nötig */
+        padding: 1rem; /* Optional, falls du das Padding anpassen willst */
+      }
+      section {
+        scroll-margin-top: 3rem;
+      }
+      #hamburger{
+        background: #3b36c3;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        color: white
+      }
+      #logohorizontal{
+        display: none;
+      }
+    }
+
+    @media (min-width: 965px) {
+      section {
+        scroll-margin-top: 4rem;
+      }
+      #hamburger{
+        display: none;
       }
     }
 
@@ -98,8 +132,8 @@
     <h1>VocVault</h1>
     <p>Der smarte Vokabeltrainer für effizientes Lernen</p>
   </header>
-
-  <nav>
+  <nav id="nav-bar">
+    <img src="img/Icon-Learn.png" alt="logo" class="logo" id="logohorizontal">
     <a href="#beschreibung">Beschreibung</a>
     <a href="#funktionen">Funktionen</a>
     <a href="#planung">Zukünftige Features</a>
@@ -107,6 +141,11 @@
     <a href="#kontakt">Impressum</a>
     <a href="#feedback">Feedback</a>
     <a href="#datenschutz">Datenschutz</a>
+  </nav>
+  <nav id="hamburger">
+    <a href="#nav-bar">&#9776;</a>
+    <p>VocVault</p>
+    <img src="img/Icon-Learn.png" alt="logo" class="logo">
   </nav>
   <section id="beschreibung">
     <h2>Beschreibung</h2>
