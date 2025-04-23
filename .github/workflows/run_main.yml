@@ -1,4 +1,4 @@
-name: Python DB
+name: Run main.py
 
 on:
   push:
