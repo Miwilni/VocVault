@@ -1,0 +1,15 @@
+name: Secret-Test
+
+on: [push]
+
+jobs:
+  use-secret:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Secret verwenden
+        run: python3 main.py
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
