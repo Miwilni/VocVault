@@ -1,0 +1,89 @@
+Language(
+  [PK][AI]Id: int NOT NULL,
+  NameInEnglish: varchar NULL,
+  LanguageCode: char NULL,
+  NameInLanguage: varchar NULL
+)
+
+LogGeneral(
+  [PK][AI]Id: int NOT NULL,
+  TableName: varchar NULL,
+  ColumnName: varchar NULL,
+  RecordId: int NULL,
+  ChangedFrom: varchar NULL,
+  ChangedTo: varchar NULL,
+  [DEFAULT=CURRENT_TIMESTAMP]Timestamp: datetime NULL
+)
+
+LogVocab(
+  [PK][AI]Id: int NOT NULL,
+  IsCorrect: tinyint NULL,
+  [DEFAULT=CURRENT_TIMESTAMP]Timestamp: datetime NULL,
+  [FK]TermId: int NULL,
+  [FK]UserId: int NULL
+)
+
+TermEnglish(
+  [PK][AI]Id: int NOT NULL,
+  EnglishTerm: varchar NULL,
+  [DEFAULT=CURRENT_TIMESTAMP]CreateDate: datetime NULL
+)
+
+TermTranslation(
+  TranslatedTerm: varchar NULL,
+  [PK][FK]TermId: int NOT NULL,
+  [PK][FK]LanguageId: int NOT NULL
+)
+
+UserAdministration(
+  [PK]Email: varchar NOT NULL,
+  IsAdmin: tinyint NULL,
+  Username: varchar NULL,
+  PasswordHash: varchar NULL,
+  TwoFAEnabled: tinyint NULL,
+  PhoneNumber: varchar NULL,
+  [FK]NativeLanguageId: int NULL
+)
+
+UserLearningLanguage(
+  [PK][FK]UserId: int NOT NULL,
+  [PK][FK]LearningLanguageId: int NOT NULL
+)
+
+ValidOtp(
+  [PK][AI]Id: int NOT NULL,
+  HashedOtp: varchar NULL,
+  OtpPurpose: varchar NULL,
+  [DEFAULT=CURRENT_TIMESTAMP]CreateDate: datetime NULL,
+  [FK]UserId: int NULL
+)
+
+Vault(
+  [PK]VaultName: varchar NOT NULL,
+  VaultDescription: text NOT NULL,
+  IsPublic: tinyint NULL
+)
+
+VaultTerm(
+  [PK][FK]TermId: int NOT NULL,
+  [PK][FK]VaultId: int NOT NULL
+)
+
+VaultUser(
+  IsVaultAdmin: tinyint NULL,
+  [PK][FK]UserId: int NOT NULL,
+  [PK][FK]VaultId: int NOT NULL
+)
+Legende:
+
+[PK] = Primärschlüssel
+
+[FK] = Fremdschlüssel
+
+[AI] = Auto-Increment
+
+[DEFAULT=...] = Standardwert
+
+Datentypen sind direkt hinter den Attributnamen angegeben
+
+NULL/NOT NULL gibt die Nullfähigkeit an
