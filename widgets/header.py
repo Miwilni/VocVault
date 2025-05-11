@@ -45,7 +45,7 @@ class Header(MDBoxLayout):
             if is_admin:
                 menu_items = [
                     {"text": "Profil", "on_release": partial(self.navigate, "profile")},
-                    {"text": "Vokabeln hinzufügen", "on_release": partial(self.navigate, "vocabulary_import")},
+                    {"text": "Vokabeln hinzufügen", "on_release": partial(self.navigate, "vault_import")},
                     {"text": "Vokabeltraining", "on_release": partial(self.navigate, "vocabulary_test")},
                     {"text": "Statistik", "on_release": partial(self.navigate, "vocabulary_stats")},
                     {"text": "Admin", "on_release": partial(self.navigate, "admin_user_management")},
@@ -55,7 +55,7 @@ class Header(MDBoxLayout):
             else:
                 menu_items = [
                     {"text": "Profil", "on_release": partial(self.navigate, "profile")},
-                    {"text": "Vokabeln hinzufügen", "on_release": partial(self.navigate, "vocabulary_import")},
+                    {"text": "Vokabeln hinzufügen", "on_release": partial(self.navigate, "vault_import")},
                     {"text": "Vokabeltraining", "on_release": partial(self.navigate, "vocabulary_test")},
                     {"text": "Statistik", "on_release": partial(self.navigate, "vocabulary_stats")},
                     {"text": "Switch Color Scheme", "on_release": self.toggle_theme},
