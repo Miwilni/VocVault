@@ -1,8 +1,8 @@
-from src.send_mail import *
-from src.sql_zugriff import execute_get_query, execute_insert_query
+from src.old_src.send_mail import *
+from src.old_src.sql_zugriff import execute_get_query, execute_insert_query
 import time
-from src import main
-from src.hash_it import *
+from src.old_src import main
+from src.old_src.hash_it import *
 import pwinput
 import secrets
 import string

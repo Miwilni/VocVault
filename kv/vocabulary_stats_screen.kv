@@ -1,0 +1,50 @@
+# kv/vocabulary_stats_screen.kv
+<VocabularyStatsScreen>:
+    md_bg_color: self.theme_cls.backgroundColor
+    Header:
+        id: header
+        pos_hint: {"top": 1}
+    BoxLayout:
+        pos_hint: {"top": 0.93}
+        orientation: 'vertical'
+        spacing: 50
+        size_hint_y: None
+        height: root.height - header.height
+        MDLabel:
+            text: "Deine Vokabel-Statistik"
+            font_style: "Display"
+            role: "small"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "center"
+            valign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        MDLabel:
+            id: correct_label
+            text: "Richtige Antworten: 0"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "center"
+            valign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+            color: 0, 1, 0, 1  # Grün
+
+        MDLabel:
+            id: incorrect_label
+            text: "Falsche Antworten: 0"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "center"
+            valign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+            color: 1, 0, 0, 1  # Rot
+
+        MDLabel:
+            id: total_label
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "center"
+            valign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+            text: "Gesamt beantwortet: 0"

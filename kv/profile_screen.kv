@@ -1,0 +1,227 @@
+# kv/profile_screen.kv (mit Abstand zwischen Labels)
+<ProfileScreen>:
+    md_bg_color: self.theme_cls.backgroundColor
+    Header:
+        id: header
+        pos_hint: {"top": 1}
+    ScrollView:
+        size_hint: 1, None
+        height: root.height - header.height
+        pos_hint: {"top": 0.93}
+        do_scroll_x: False
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: 130
+            padding: 50
+            MDLabel:
+                font_style: "Display"
+                role: "small"
+                text: "Dein Account"
+                pos_hint: {"center_x": .5, "center_y": .5}
+                halign: "center"
+                valign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+            MDBoxLayout:
+                pos_hint: {"center_x": .5, "center_y": .5}
+                orientation: 'horizontal'
+                height: '40dp'
+                MDLabel:
+                    halign: "center"
+                    valign: "center"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text: "Benutzername: "
+                    text_size: self.size
+                MDTextField:
+                    halign: "center"
+                    valign: "center"
+                    id: username_field
+                    height: '40dp'
+                    MDTextFieldHintText:
+                        text: "Benutzername"
+            MDBoxLayout:
+                pos_hint: {"center_x": .5, "center_y": .5}
+                orientation: 'horizontal'
+                height: '40dp'
+                MDLabel:
+                    halign: "center"
+                    valign: "center"
+                    text: "E-Mail: "
+                    height: '40dp'
+                MDTextField:
+                    halign: "center"
+                    valign: "center"
+                    id: email_field
+                    disabled: True
+                    height: '40dp'
+                    MDTextFieldHintText:
+                        text: "E-Mail"
+            MDBoxLayout:
+                pos_hint: {"center_x": .5, "center_y": .5}
+                orientation: 'horizontal'
+                height: '40dp'
+                MDLabel:
+                    halign: "center"
+                    valign: "center"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    text: "Telefonnummer:"
+                    height: '40dp'
+                MDTextField:
+                    halign: "center"
+                    valign: "center"
+                    id: phone_input
+                    multiline: False
+                    size_hint_y: None
+                    height: '40dp'
+                    write_tab: False
+                    MDTextFieldHintText:
+                        text: "Telefonnummer"
+            MDBoxLayout:
+                orientation: 'horizontal'
+                height: '40dp'
+                pos_hint: {"center_x": .5, "center_y": .5}
+                MDLabel:
+                    halign: "center"
+                    valign: "center"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    text: "Muttersprache:"
+                Spinner:
+                    id: native_language_spinner
+                    text: "Muttersprache wählen"
+                    size_hint_y: None
+                    height: '40dp'
+                    values: ["Deutsch", "Englisch", "Französisch", "Spanisch", "Italienisch", "Weitere..."]
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                height: '40dp'
+                spacing: dp(10)
+                MDLabel:
+                    halign: "center"
+                    valign: "center"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    text: "2 Faktor Authentifizierung: "
+                MDSwitch:
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    halign: "center"
+                    valign: "center"
+                    id: two_fa_switch
+                    size_hint_x: 0.3
+                    disabled: False
+                    size_hint_x: None
+                    width: 120
+
+            MDButton:
+                size_hint_y: None
+                height: '40dp'
+                pos_hint: {"center_x": .5, "center_y": .5}
+                on_release:
+                    root.update_profile()
+                MDButtonText:
+                    text: "Profil aktualisieren"
+
+            MDLabel:
+                font_style: "Headline"
+                text: "Passwort ändern"
+                font_size: '28sp'
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: '60dp'
+
+                MDTextField:
+                    id: old_password_input
+                    multiline: False
+                    write_tab: False
+                    password: root.password_hidden
+                    helper_text_mode: "on_focus"
+                    size_hint_y: None
+                    height: '60dp'
+                    on_text:
+                        if '\n' in self.text: self.text = self.text.replace('\n', ''); root.login_user()
+
+                    MDTextFieldLeadingIcon:
+                        icon: "lock"
+
+                    MDTextFieldHintText:
+                        text: "Altes Passwort"
+
+                    MDTextFieldHelperText:
+                        text: "8 Letters"
+                        mode: "persistent"
+
+                MDIconButton:
+                    icon: "eye-off" if root.password_hidden else "eye"
+                    on_release: root.toggle_password_visibility()
+            MDBoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: '60dp'
+                MDTextField:
+                    id: new_password_input
+                    multiline: False
+                    write_tab: False
+                    password: root.password_hidden
+                    helper_text_mode: "on_focus"
+                    size_hint_y: None
+                    height: '60dp'
+                    on_text:
+                        if '\n' in self.text: self.text = self.text.replace('\n', ''); root.login_user()
+
+                    MDTextFieldLeadingIcon:
+                        icon: "lock"
+
+                    MDTextFieldHintText:
+                        text: "Neues Password"
+
+                    MDTextFieldHelperText:
+                        text: "8 Letters"
+                        mode: "persistent"
+
+                MDIconButton:
+                    icon: "eye-off" if root.password_hidden else "eye"
+                    on_release: root.toggle_password_visibility()
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: '60dp'
+                MDTextField:
+                    id: repeat_new_password_input
+                    multiline: False
+                    write_tab: False
+                    password: root.password_hidden
+                    helper_text_mode: "on_focus"
+                    size_hint_y: None
+                    height: '60dp'
+                    on_text:
+                        if '\n' in self.text: self.text = self.text.replace('\n', ''); root.login_user()
+
+                    MDTextFieldLeadingIcon:
+                        icon: "lock"
+
+                    MDTextFieldHintText:
+                        text: "Neues Password wiederholen"
+
+                    MDTextFieldHelperText:
+                        text: "8 Letters"
+                        mode: "persistent"
+
+                MDIconButton:
+                    icon: "eye-off" if root.password_hidden else "eye"
+                    on_release: root.toggle_password_visibility()
+
+
+            MDButton:
+                size_hint_y: None
+                height: '40dp'
+                pos_hint: {"center_x": .5, "center_y": .5}
+                on_release:
+                    root.change_password()
+                MDButtonText:
+                    text: "Passwort ändern"
+

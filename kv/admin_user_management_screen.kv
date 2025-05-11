@@ -1,0 +1,56 @@
+# kv/admin_user_management_screen.kv
+#:import MDLabel kivymd.uix.label.MDLabel
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+<AdminUserManagementScreen>:
+    md_bg_color: self.theme_cls.backgroundColor
+    Header:
+        id: header
+        pos_hint: {"top": 1}
+    MDBoxLayout:
+        pos_hint: {"top": 0.93}
+        orientation: 'vertical'
+        height: self.minimum_height
+        spacing: 20
+        MDLabel:
+            text: "Benutzerverwaltung (Admin)"
+            font_style: "Display"
+            size_hint_y: None
+            text_size: self.width, None
+            height: self.texture_size[1]
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: '40dp'
+            spacing: 10
+            MDTextField:
+                id: delete_email_input
+                multiline: True
+                write_tab: False
+                on_text:if '\n' in self.text:self.text = self.text.replace('\n', ''); root.delete_user_search()
+                MDTextFieldHintText:
+                    text: "E-Mail des zu löschenden Nutzers"
+            MDButton:
+                id: delete_user
+                style: "elevated"
+                on_release: root.delete_user_search()
+                MDButtonIcon:
+                    icon: "delete"
+
+                MDButtonText:
+                    text: "Delete User"
+
+
+        MDLabel:
+            text: "Alle Benutzer:"
+            font_style: "Headline"
+            size_hint_y: None
+            text_size: self.width, None
+            height: self.texture_size[1]
+        ScrollView
+            id: users_box
+            bar_width: 10
+            size_hint_y: 1
+            scroll_type: ['bars', 'content']
+            do_scroll_x: True
+            do_scroll_y: True

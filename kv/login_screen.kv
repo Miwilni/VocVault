@@ -1,0 +1,80 @@
+# kv/login_screen.kv
+#:import MDLabel kivymd.uix.label.MDLabel
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+<LoginScreen>:
+    md_bg_color: self.theme_cls.backgroundColor
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: 60
+        padding: 30
+        #Header:
+        MDLabel:
+            text: "Login"
+            color: 0.49, 0.36, 0.64, 1
+            font_style: "Headline"
+            halign: "center"
+
+        MDTextField:
+            id: email_input
+            validator: "email"
+            helper_text_mode: "on_focus"
+            multiline: True
+            write_tab: False
+            focus: True
+            size_hint_y: None
+            height: '60dp'
+            on_text: if '\n' in self.text: self.text = self.text.replace('\n', ''); root.login_user()
+            focus_next: password_input
+            MDTextFieldLeadingIcon:
+                icon: "email"
+            MDTextFieldHintText:
+                text: "E-Mail"
+            MDTextFieldHelperText:
+                text: "user@gmail.com"
+                mode: "persistent"
+
+        MDBoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: '60dp'
+
+            MDTextField:
+                id: password_input
+                multiline: True
+                write_tab: False
+                password: root.password_hidden
+                helper_text_mode: "on_focus"
+                size_hint_y: None
+                height: '60dp'
+                on_text:
+                    if '\n' in self.text: self.text = self.text.replace('\n', ''); root.login_user()
+
+                MDTextFieldLeadingIcon:
+                    icon: "lock"
+
+                MDTextFieldHintText:
+                    text: "Passwort"
+
+                MDTextFieldHelperText:
+                    text: "8 Letters"
+                    mode: "persistent"
+
+            MDIconButton:
+                icon: "eye-off" if root.password_hidden else "eye"
+                on_release: root.password_hidden = not root.password_hidden
+        MDButton:
+            id: login
+            style: "elevated"
+            pos_hint: {"center_x": .5}
+            on_release:root.login_user()
+            MDButtonText:
+                text: "Login"
+
+        MDButton:
+            id: login
+            style: "elevated"
+            pos_hint: {"center_x": .5}
+            on_release:app.sm.current = 'signup'
+            MDButtonText:
+                text: "Noch kein Konto? Jetzt registrieren!"

@@ -1,0 +1,46 @@
+# kv/vocabulary_test_screen.kv
+<VocabularyTestScreen>:
+    md_bg_color: self.theme_cls.backgroundColor
+    Header:
+        id: header
+        pos_hint: {"top": 1}
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: 50
+        padding: 30
+        pos_hint: {"top": 0.93}
+        size_hint_y: None
+        height: self.minimum_height
+        MDLabel:
+            id: term_label
+            text: "Vokabel wird geladen..."
+            font_style: "Display"
+            role: "small"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "center"
+            valign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        MDTextField:
+            id: translation_input
+            multiline: False
+            size_hint_y: None
+            height: '40dp'
+            write_tab: False
+            MDTextFieldLeadingIcon:
+                icon: "translate"
+            MDTextFieldHintText:
+                text: "Übersetzung"
+            MDTextFieldHelperText:
+                text: "Hello"
+                mode: "persistent"
+
+        MDButton:
+            size_hint_y: None
+            height: '40dp'
+            pos_hint: {"center_x": .5, "center_y": .5}
+            on_release:
+                root.submit_translation()
+            MDButtonText:
+                text: "Antwort überprüfen"

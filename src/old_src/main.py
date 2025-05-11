@@ -265,7 +265,7 @@ class Header(BoxLayout):
 
 class VocVaultApp(App):
     def get_application_icon(self):
-        return r'img/Icon-Learn.png'
+        return r'img/icon.png'
 
     def build(self):
         return Builder.load_file("main.kv")

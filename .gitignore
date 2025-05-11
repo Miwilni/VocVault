@@ -1,5 +1,4 @@
 workspace.xml
 .idea/workspace.xml
 .idea
-src/send_mail.py
 .env
